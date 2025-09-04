@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Indemnización - Accidentes de Construcción</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; padding: 0; background:#f7f9fb; color:#222; }
+    .container { max-width: 600px; margin: auto; background:#fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h1 { font-size: 20px; margin-bottom: 16px; color:#0b57d0; }
+    label { display:block; margin: 12px 0 6px; font-weight: bold; }
+    select, input { width: 100%; padding: 10px; border:1px solid #ccc; border-radius:8px; }
+    button { margin-top:16px; padding:12px; width:100%; background:#0b57d0; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
+    button:hover { background:#0949b5; }
+    .result { margin-top:20px; padding:15px; background:#eef6ff; border-left:4px solid #0b57d0; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Indemnización</h1>
+    <label for="state">Selecciona tu estado:</label>
+    <select id="state">
+      <option value="CA">California</option>
+      <option value="NY">New York</option>
+      <option value="TX">Texas</option>
+      <option value="FL">Florida</option>
+      <option value="IL">Illinois</option>
+      <option value="NJ">New Jersey</option>
+    </select>
+    
+    <label for="wage">Tu salario semanal promedio (USD):</label>
+    <input type="number" id="wage" placeholder="Ejemplo: 900">
+    
+    <button onclick="calculate()">Calcular Indemnización</button>
+    
+    <div id="output" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const state = document.getElementById("state").value;
+      const wage = parseFloat(document.getElementById("wage").value);
+      if (isNaN(wage) || wage <= 0) {
+        alert("Por favor ingresa un salario válido.");
+        return;
+      }
+
+      let rate = 0, max = Infinity, min = 0;
+      switch(state) {
+        case "CA": rate = 0.6667; min = 252.03; max = 1680.29; break;
+        case "NY": rate = 0.6667; max = 1222.42; break;
+        case "TX": rate = 0.70; max = 1219; min = 183; break;
+        case "FL": rate = 0.6667; max = 1295; break;
+        case "IL": rate = 0.6667; max = 1936.86; break;
+        case "NJ": rate = 0.70; max = 1159; min = 309; break;
+      }
+      
+      let benefit = wage * rate;
+      if (benefit > max) benefit = max;
+      if (benefit < min) benefit = min;
+
+      document.getElementById("output").style.display = "block";
+      document.getElementById("output").innerHTML = 
+        `<strong>Resultado:</strong><br>Estado: ${state}<br>` +
+        `Salario semanal ingresado: $${wage.toFixed(2)}<br>` +
+        `Indemnización estimada por semana: <strong>$${benefit.toFixed(2)}</strong>` +
+        `<br><br><small>*Los montos son aproximados según las leyes estatales de 2025. Consulta a un abogado para confirmación exacta.</small>`;
+    }
+  </script>
+</body>
+</html>
